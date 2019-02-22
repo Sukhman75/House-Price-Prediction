@@ -46,11 +46,30 @@ X_Concat = X_Concat.values
 #print(X_Concat.info())
 
 # Building the Machine Learning Algorithm 
+# Multiple Linear Regression 
+import statsmodels.api as sm
+X_Scaled1 = sm.add_constant(X_Scaled)
+model = sm.OLS(Y, X_Scaled1)
+fitt = model.fit()
+fitt.summary()
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 sc = StandardScaler()
 X_Scaled = sc.fit_transform(X_Concat)
 
+from sklearn.linear_model import LinearRegression
+clf_gini = LinearRegression()
+X_tr, X_val, Y_tr, Y_val = train_test_split(X_Scaled, Y,test_size=0.2, random_state = 3)
+clf_gini.fit(X_tr,Y_tr) 
 #Y_scaled= sc.fit_transform(Y)
 #Y = Y.reshape(-1, 1)
+
+predictions= clf_gini.predict(X_val)
+
+for i in range(10):
+    print(Y_val[i], predictions[i])
+
+from sklearn import metrics
+print(np.sqrt(metrics.mean_squared_error(Y_val, predictions)))
+print(metrics.r2_score(Y_val, predictions))
